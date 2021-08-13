@@ -10,6 +10,12 @@ pendiente=raster('slope.tif')
 suelo=raster('soil_type.tif')
 
 
+capacidad=resample(capacidad,dem)
+peli=resample(peli,dem)
+pendiente=resample(pendiente,dem)
+suelo=resample(suelo,dem)
+
+
 DF=as.data.frame(dem,xy=T)
 DF_DEM=na.omit(DF)
 
@@ -26,7 +32,7 @@ dem_value=extract(dem,puntos_de_muestreo)
 slope_value=round(extract(pendiente,puntos_de_muestreo),2)
 soil_value=extract(suelo,puntos_de_muestreo)
 capacity_value=extract(capacidad,puntos_de_muestreo)
-hazard_value=extract(peli,puntos_de_muestreo)
+hazard_value=as.integer(extract(peli,puntos_de_muestreo))
 
 data=data.frame(dem_value,soil_value,slope_value,capacity_value,hazard_value)
 
@@ -45,7 +51,7 @@ range_capacity=function(x){
 }
 data=na.omit(data)
 data$capacity_value=as.numeric(lapply(data[,4],range_capacity))
-
+data=na.omit(data)
 
 write.table(data,"D:/Proyectos_GitHub/PISCO_Peligro/data/CSV/data.csv",row.names = F,sep = ',')
 
